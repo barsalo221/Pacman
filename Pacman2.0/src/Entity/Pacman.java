@@ -11,9 +11,12 @@ public class Pacman extends Entity {
 	 
 	protected KeyHandler keyH;
 	public int life; 
+	public int maxLife;
 	
 	// max score is 225
-	public int score = 0;
+	public int score;
+	public int maxScore = 225;
+	public int enemyScore;
 	
 	
 	public Pacman(GamePanel gp, KeyHandler keyH) {
@@ -34,9 +37,11 @@ public class Pacman extends Entity {
 		this.y = 100;
 		this.speed = 3;
 		direction = "down";
+		score = 0;
 		//pacman status
-		maxLife = 6;
+		maxLife = 5;
 		life = maxLife;
+		invincible = false;
 	}
 	public void setDefaultPositions() {
 		this.x = 100;
@@ -44,7 +49,7 @@ public class Pacman extends Entity {
 		direction = "down";
 	}
 	public void restoreLife() {
-		life = maxLife;
+		life = maxLife; 
 		invincible = false;
 	}
 
@@ -64,11 +69,10 @@ public class Pacman extends Entity {
 	public void update() {
 		if(keyH.upPressed == true) {
 			direction ="up";
-			}
+		}
 		else if (keyH.downPressed == true) {
 			direction ="down";
-			}
-		
+		}
 		else if (keyH.rightPressed == true) {
 			direction ="right";
 		}
@@ -110,7 +114,7 @@ public class Pacman extends Entity {
 		if(invincible == true) {
 			invincibleCounter++;
 			System.out.println("invincibleCounter: " + invincibleCounter);
-			if(invincibleCounter > 50 ) {
+			if(invincibleCounter > 10 ) {
 				invincible = false;
 				invincibleCounter = 0; 
 			}

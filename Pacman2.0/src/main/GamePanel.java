@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,7 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
 	// system
 	public Sound sound = new Sound();
 	public CollisionChekers cChecker = new CollisionChekers(this);
-	protected TileManager tileM = new TileManager(this);
+	public TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	protected Thread gameThread;
 	protected AssetSetter assetSetter = new AssetSetter(this);
@@ -55,9 +59,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int gameOverState = 4;
 	public final int optionsState = 5;
 	
-	//server and client
-	private Server socketServer;
-	private Client socketClient; 
 	
 	public GamePanel() {
 		
@@ -186,8 +187,9 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		
 	 public synchronized void startServerClient() {
-		 if(JOptionPane.showConfirmDialog(this, "do you want to play vs other player?") == 0) {
-			 System.out.println();
-		 }
+		 new Server();
+		 new Client();
+		 new Client();
 	 }
+
 }

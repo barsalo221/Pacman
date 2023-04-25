@@ -20,7 +20,7 @@ public class UI {
 	
 	public UI(GamePanel gp) {
 		this.gp = gp;
-		arial_40 = new Font("Arial", Font.PLAIN, 40);
+		arial_40 = new Font("Arial", Font.PLAIN, 20);
 	
 		//create HUD object
 		SuperObject heart = new Heart(gp);
@@ -32,8 +32,8 @@ public class UI {
 		this.g2 = g2;
 		g2.setFont(arial_40);
 		g2.setColor(Color.black);
-		g2.drawString("SCORE = " + gp.pacman.score, getXforCenteredText("SCORE = ") - 1, 30);
-		
+		g2.drawString("MAX SCORE = " + gp.pacman.maxScore, getXforCenteredText("MAX SCORE = ") , 30);
+		g2.drawString("YOUR SCORE = " + gp.pacman.score, 100, 30);
 		// Title State
 		if(gp.gameState == gp.titleState) {
 			drawTitleScreen();
@@ -220,7 +220,7 @@ public class UI {
 		String text;
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 110F));
 		
-		text = "Game Over";
+		text = "YOU DIE";
 		//shadow
 		g2.setColor(Color.black);
 		x = getXforCenteredText(text);
@@ -231,7 +231,7 @@ public class UI {
 		g2.drawString(text, x-4, y-4);
 		//retry
 		g2.setFont(g2.getFont().deriveFont(50F));
-		text = "RETRY!";
+		text = "RETRY! LIFE GET DOWN";
 		x = getXforCenteredText(text);
 		y += gp.tileSize * 4;
 		g2.drawString(text, x, y);
@@ -239,7 +239,7 @@ public class UI {
 			g2.drawString(">", x - 40, y);
 		}
 		//back to titlescreen
-		text = "QUIT";
+		text = "RESTART";
 		x = getXforCenteredText(text);
 		y += 55;
 		g2.drawString(text, x, y);

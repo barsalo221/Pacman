@@ -24,9 +24,8 @@ public class Entity {
 	protected GamePanel gp;
 	public int actionLockCounter = 0;
 	public int type; // 0 = pacman 1 = ghost
-	public int maxLife;
-	public int life;
-	protected String dialogues[] = new String[20];
+
+//	protected String dialogues[] = new String[20];
 
 
 	public Entity(GamePanel gp) {
@@ -53,9 +52,9 @@ public class Entity {
 		g2.drawImage(image, x,y, gp.originalTileSize * (gp.scale - 1),gp.originalTileSize * (gp.scale - 1), null);
 	}
 	
-	public void setAction() {}
+	public void setAction(Pacman pacman) {}
 	public void update() {
-		setAction();
+		setAction(gp.pacman);
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkDot(gp.pacman, false);
@@ -65,8 +64,9 @@ public class Entity {
 		
 		if(this.type == 1 && contactPacman == true) {
 			if(gp.pacman.invincible == false) {
-				gp.pacman.life -= 1;
+				gp.pacman.life--;
 				gp.pacman.invincible = true;
+				gp.retry();
 			}
 		}
 		

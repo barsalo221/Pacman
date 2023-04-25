@@ -101,6 +101,8 @@ public class KeyHandler implements KeyListener{
 			}
 			if(gp.ui.commandNum == 1) {
 				gp.startServerClient();
+				gp.setVisible(false);
+				gp.startServerClient();
 			}
 			if(gp.ui.commandNum == 2) { 
 				System.exit(0);
@@ -244,6 +246,7 @@ public class KeyHandler implements KeyListener{
 			}
 			else if(gp.ui.commandNum == 1) {
 				gp.gameState = gp.playState;
+				gp.restart();
 			}
 		}
 	}

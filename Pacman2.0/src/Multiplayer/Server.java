@@ -1,5 +1,7 @@
-	package Multiplayer;
+package Multiplayer;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,106 +17,84 @@ import main.GamePanel;
 import main.MainMenu;
 
 public class Server extends Thread{
+	public final int port = 4000;
+	private ServerSocket ss;
+	private int numPlayers;
+	private ServerSideConnection player1;
+	private ServerSideConnection player2;
 
-    final static int PORT = 8888;
-    Socket socket;
-    ObjectOutputStream outputStream;
-    ObjectInputStream inputStream;
-    MainMenu mainMenu;
-    boolean flag = true;
+	public Server() {
+		System.out.println("----GAME SERVER----");
+		numPlayers = 0;
+		try {
+			ss = new ServerSocket(port);
+		}catch (Exception e) {
+			System.out.println("IOException from GameServer Constractor");
+		}
+	}
+	public void acceptConnections() {
+		try {
+			System.out.println("WAITING FOR CONNECTIONS...");
+			while(numPlayers < 2) {
+				Socket s = ss.accept();
+				numPlayers++;
+				System.out.println("player #" + numPlayers + "has connected!");
+				ServerSideConnection ssc = new ServerSideConnection(s, numPlayers);
+				if(numPlayers == 1) {
+					player1 = ssc;
+				}else {
+					player2 = ssc;
+				}
+				Thread t = new Thread(ssc);
+				t.start();
+				if(numPlayers == 2) {
+					
+				}else {
+					
+				}
+				}
+		System.out.println("we now have 2 player");
+		}catch (Exception e) {
+			System.out.println("IOException from acceptConnections");
+		}
+	}
+	private class ServerSideConnection implements Runnable{
 
-    public Server() throws InterruptedException {
-        serverConnection();
-        this.mainMenu = new MainMenu();
-        start();
-    }
+		private Socket socket;
+		private DataInputStream dataIn;
+		private DataOutputStream dataOut;
+		// ?
+		private int playerID;
+		
+		public ServerSideConnection(Socket s, int id) {
+			socket = s;
+			playerID = id;
+			try {
+				dataIn = new DataInputStream(socket.getInputStream());
+				dataOut = new DataOutputStream(socket.getOutputStream());
 
-    private void serverConnection() throws InterruptedException {
-
-        try {
-            // create a server socket
-            try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-
-                // wait for a client to connect
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            // get the input and output streams
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-            inputStream = new ObjectInputStream(socket.getInputStream());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        sleep(1000);
-    }
-
-    public void start() {
-        write();
-        read();
-    }
-
-    private void write() {
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-
-                    // write a Data object to the client
-                    DataServer dataServer = new DataServer(mainMenu.gp);
-                    try {
-                        outputStream.writeObject(dataServer);
-                        System.out.println("Sent data to client: " + dataServer.gp.getName());
-                    } catch (IOException ignored) {
-                    }
-
-                    // sleep
-                    try {
-                        sleep(50);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                }
-            }
-        });
-        thread.start();
-    }
-
-    private void read() {
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-
-                    // read a Data object from the client
-                    DataClient dataClient;
-                    try {
-                        dataClient = (DataClient) inputStream.readObject();
-                        System.out.println("Received data from client: " + dataClient.gp.getName());
-//                        gameFrame.panel.paddle1.y = dataClient.yPaddle;
-                    } catch (IOException | ClassNotFoundException ignored) {
-                    }
-
-                    // sleep
-                    try {
-                        sleep(50);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                }
-            }
-        });
-        thread.start();
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-    	new Server();
-    }
+			}catch (IOException e) {
+				System.out.println("IOException from SSC constructor");
+			}
+		}
+		
+		@Override
+		public void run() {
+			try {
+				dataOut.writeInt(playerID);
+				dataOut.flush();
+				
+				while(true) {
+					
+				}
+			}catch (IOException e) {
+				System.out.println("IOException from run() SSC");
+			}
+		}
+		
+	}
+	public static void main(String[] args) {
+		Server server = new Server();
+		server.acceptConnections();
+	}	
 }
